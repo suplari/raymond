@@ -109,6 +109,17 @@ func (options *Options) Value(name string) interface{} {
 
 	return value.Interface()
 }
+func (options *Options) ValueFromAllCtx(name string) interface{} {
+ 	// Loop through all contexts in the stack
+ 	for index := range options.eval.ctx {
+ 		value := options.eval.evalField(options.eval.ancestorCtx(index), name, false)
+ 		if value.IsValid() {
+ 			return value.Interface()
+ 		}
+ 	}
+
+	return nil
+} 
 
 // ValueStr returns string representation of field value from current context.
 func (options *Options) ValueStr(name string) string {
